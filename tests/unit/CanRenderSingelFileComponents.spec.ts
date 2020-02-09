@@ -20,6 +20,19 @@ describe('Clay View can render single File Component', () => {
     expect(wrapper.html()).toMatch('<div></div>');
   });
 
+  it('from local clay view Register', () => {
+    const schema: ClayNode = {
+      clayKey: 'key',
+      component: 'BasicTestComponent',
+    };
+
+    const wrapper = mount(ClayView, {
+      propsData: { schema, components: { BasicTestComponent } },
+    });
+
+    expect(wrapper.html()).toMatch('<div></div>');
+  });
+
   it('with classes string Syntax', () => {
     const schema: ClayNode = {
       clayKey: 'key',

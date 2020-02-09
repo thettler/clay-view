@@ -93,7 +93,7 @@ export default {
         return {
             schema: {
                 clayKey: 'someUniqueKey',
-                component: 'my-local-component'
+                component: 'MyLocalComponent'
             },   
             components: {MyLocalComponent}
         }           

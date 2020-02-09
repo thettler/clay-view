@@ -1,5 +1,5 @@
 import {
-  CreateElement, VNode, VNodeChildren, VNodeData,
+  Component, CreateElement, VNode, VNodeChildren, VNodeData,
 } from 'vue';
 import {
   ClayEvent, ClayNode, ClayScopedSlot, StorageDriver,
@@ -12,11 +12,14 @@ export default class ClayNodeBuilder {
 
     protected slotStorages?: ScopedSlotStorageDriver;
 
-    h: CreateElement;
+    protected h: CreateElement;
 
-    constructor(h: CreateElement, slotStorage?: ScopedSlotStorageDriver) {
+    protected components: { [key: string]: Component };
+
+    constructor(h: CreateElement, components: { [key: string]: Component }, slotStorage?: ScopedSlotStorageDriver) {
       this.h = h;
       this.slotStorages = slotStorage;
+      this.components = components;
     }
 
     public parse(cNode: ClayNode): VNode {
@@ -61,7 +64,7 @@ export default class ClayNodeBuilder {
       this.validateCNode(cNode);
 
       return this.h(
-        cNode.component,
+        this.resolveComponent(cNode.component),
         this.clayNodeToVNodeData(cNode),
         this.parseChildClayNodes(cNode),
       );
@@ -88,7 +91,7 @@ export default class ClayNodeBuilder {
         return (clayNode.children.map((child: ClayNode) => this.parseClayNode(child))) as VNodeChildren;
       }
 
-      return [this.parseClayNode(clayNode.children)]as VNodeChildren;
+      return [this.parseClayNode(clayNode.children)] as VNodeChildren;
     }
 
     parseScopedSlots(clayNode: ClayNode) {
@@ -101,7 +104,7 @@ export default class ClayNodeBuilder {
         (scopedSlot: ClayScopedSlot) => (props: any) => {
           if (!this.slotStorages) {
             const slotStorage = new ScopedSlotStorageDriver({ [scopedSlot.key]: props });
-            const builder = new ClayNodeBuilder(this.h, slotStorage);
+            const builder = new ClayNodeBuilder(this.h, this.components, slotStorage);
             return builder.parse(scopedSlot.content);
           }
 
@@ -114,7 +117,7 @@ export default class ClayNodeBuilder {
             },
           );
 
-          const builder = new ClayNodeBuilder(this.h, slotStorage);
+          const builder = new ClayNodeBuilder(this.h, this.components, slotStorage);
           return builder.parse(scopedSlot.content);
         },
       );
@@ -283,7 +286,7 @@ export default class ClayNodeBuilder {
       return this.storages[clayKey];
     }
 
-    resolveBinding(path: string, CNode:ClayNode): any {
+    resolveBinding(path: string, CNode: ClayNode): any {
       if (!path.includes('#', 1)) {
         return this.getCNodeStorage(CNode.clayKey).get(path);
       }
@@ -293,5 +296,12 @@ export default class ClayNodeBuilder {
       }
 
       return this.slotStorages.get(path);
+    }
+
+    resolveComponent(component: string|Component):string|Component {
+      if (typeof component === 'string') {
+        return this.components[component] || component;
+      }
+      return component;
     }
 }
