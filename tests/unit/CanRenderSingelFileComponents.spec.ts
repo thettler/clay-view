@@ -3,7 +3,7 @@ import ClayView from '@/ClayView.vue';
 import BasicTestComponent from '@/../tests/unit/support/BasicTestComponent.vue';
 import BasicTestWithPropComponent from '@/../tests/unit/support/BasicTestWithPropComponent.vue';
 import BasicTestWithSlotComponent from '@/../tests/unit/support/BasicTestWithSlotComponent.vue';
-import BasicTestWithnamedSlotComponent from '@/../tests/unit/support/BasicTestWithNamedSlotComponent.vue';
+import BasicTestWithNamedSlotComponent from '@/../tests/unit/support/BasicTestWithNamedSlotComponent.vue';
 import { ClayNode } from '@/typings/clay.d';
 
 describe('Clay View can render single File Component', () => {

@@ -22,7 +22,7 @@ export interface ClayNode {
     nativeOn?: {
         [key: string]: ClayEvent;
     }
-    data?: any
+    data?: { [key: string]: any }
     scopedSlots?: {
         [key: string]: ClayScopedSlot;
     }
