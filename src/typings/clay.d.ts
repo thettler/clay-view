@@ -8,6 +8,10 @@ export interface ClayNode {
     ':text'?: string
     class?: { [key: string]: boolean } | string[] | string
     ':class'?: string
+    if?: boolean
+    ':if'?: string
+    show?: boolean
+    ':show'?: string
     style?: { [key: string]: string }
     attrs?: { [key: string]: string }
     props?: { [key: string]: any }
@@ -28,7 +32,7 @@ export interface ClayNode {
     }
 }
 
-export type ClayEvent = Function|string;
+export type ClayEvent = Function | string;
 
 export interface StorageDriver {
     get(key: string, options?: any): any;

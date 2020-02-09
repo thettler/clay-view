@@ -153,6 +153,28 @@ const TextCNode = {
 }
 ```
 
+### if (v-if)
+The `if` key is basically the `v-if` directive from vue.
+```js
+// Will render nothing
+const TextCNode = {
+  clayKey: 'key',
+  component: 'div',
+  if: false
+}
+```
+
+### show (v-show)
+The `show` key is basically the `v-show` directive from vue.
+```js
+// Will render <div style="display:none;"></div>
+const TextCNode = {
+  clayKey: 'key',
+  component: 'div',
+  show: false
+}
+```
+
 ### class 
 The `class` key let you add css classes to an CNode. It follows the same syntax as a [normal bound class in vue](https://vuejs.org/v2/guide/class-and-style.html#Binding-HTML-Classes). So you can use
 an `string`, `array` or`object` to define your classes
@@ -365,6 +387,8 @@ const DataCNode = {
   component: 'div',
   ':text': 'myReactiveData',
   ':class': 'myReactiveData',
+  ':if': 'myReactiveData',
+  ':show': 'myReactiveData',
   'attrs': {
     ':id' : 'myReactiveData'
   },

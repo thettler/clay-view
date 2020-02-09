@@ -22,7 +22,7 @@ export default class ClayNodeBuilder {
       this.components = components;
     }
 
-    public parse(cNode: ClayNode): VNode {
+    public parse(cNode: ClayNode): VNode|undefined {
       return this.parseClayNode(cNode);
     }
 
@@ -60,8 +60,20 @@ export default class ClayNodeBuilder {
     }
 
 
-    parseClayNode(cNode: ClayNode): VNode {
+    parseClayNode(cNode: ClayNode): VNode|undefined {
       this.validateCNode(cNode);
+
+      if (cNode.if !== undefined && !this.resolveCondition(cNode.if, cNode)) {
+        return undefined;
+      }
+
+      if (cNode.data) {
+        this.registerData(cNode);
+      }
+
+      if (cNode[':if'] && !this.resolveCondition(cNode[':if'], cNode)) {
+        return undefined;
+      }
 
       return this.h(
         this.resolveComponent(cNode.component),
@@ -125,10 +137,6 @@ export default class ClayNodeBuilder {
 
     clayNodeToVNodeData(clayNode: ClayNode): VNodeData {
       const vNodeData: VNodeData = {};
-      if (clayNode.data) {
-        this.registerData(clayNode);
-      }
-
       if (clayNode.class) {
         vNodeData.class = this.CNodeUnboundClassesToVNode(clayNode);
       }
@@ -142,6 +150,14 @@ export default class ClayNodeBuilder {
 
       if (clayNode.style) {
         vNodeData.style = this.CNodeStyleToVNode(clayNode);
+      }
+
+      if (clayNode.show !== undefined && !this.resolveCondition(clayNode.show, clayNode)) {
+        vNodeData.style = { ...vNodeData.style as Object, display: 'none' };
+      }
+
+      if (clayNode[':show'] && !this.resolveCondition(clayNode[':show'], clayNode)) {
+        vNodeData.style = { ...vNodeData.style as Object, display: 'none' };
       }
 
       if (clayNode.attrs) {
@@ -303,5 +319,13 @@ export default class ClayNodeBuilder {
         return this.components[component] || component;
       }
       return component;
+    }
+
+    resolveCondition(condition: string|boolean, CNode: ClayNode):boolean {
+      if (typeof condition === 'boolean') {
+        return condition;
+      }
+
+      return this.resolveBinding(condition, CNode);
     }
 }

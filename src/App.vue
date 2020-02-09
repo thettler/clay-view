@@ -19,58 +19,19 @@ import DefaultStorageDriver from '@/DefaultStorageDriver';
     })
 export default class App extends Vue {
   bla() {
-    this.schema.component = { template: '<h1><span v-text="bound"></span>lool <slot /></h1>', props: ['bound'] };
+    this.schema.children.show = !this.schema.children.show;
   }
 
         schema: ClayNode = {
-          clayKey: 'root',
-          component: {
-            template: '<div><input v-model="data" /> <slot :scopedData="data" /></div>',
-            props: ['bound'],
-            data() {
-              return {
-                data: 'lala',
-              };
-            },
+          clayKey: 'key',
+          component: 'div',
+          children: {
+            clayKey: 'child',
+            component: 'span',
+            text: 'lalal',
+            show: true,
           },
-          scopedSlots: {
-            default: {
-              key: 'rootSlot',
-              content: {
-                clayKey: 'slotChild',
-                component: { template: '<div><div v-text="bla"></div><slot /></div>', props: ['bla'] },
-                props: {
-                  ':bla': 'rootSlot#scopedData',
-                },
-                scopedSlots: {
-                  default: {
-                    key: 'childSlot',
-                    content: {
-                      clayKey: 'slotChild1',
-                      component: { template: '<div v-text="bla"></div>', props: ['bla'] },
-                      props: {
-                        ':bla': 'rootSlot#scopedData',
-                      },
-                      on: {
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          data: {
-            prop: 'lalalal',
-          },
-          props: {
-            ':bound': 'prop',
-          },
-          nativeOn: {
-            click(storage: DefaultStorageDriver) {
-              storage.set('prop', Math.random());
-            },
-          },
-        }
+        };
 
         render(h: CreateElement) {
           return h('div', '<h1>lalalal</h1>');

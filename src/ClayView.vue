@@ -24,7 +24,7 @@ export default class ClayView extends Vue {
 
         protected internalSchema: ClayNode = this.schema;
 
-        render(h: CreateElement): VNode {
+        render(h: CreateElement): VNode|undefined {
           const clayNodeBuilder = new ClayNodeBuilder(h, this.components);
           return clayNodeBuilder.parse(this.internalSchema);
         }

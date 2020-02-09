@@ -11,7 +11,7 @@ export default class DefaultStorageDriver implements StorageDriver {
     get(key: string, options?: any): any {
       const keys = key.split('.');
 
-      if (!this.store[keys[0]]) {
+      if (this.store[keys[0]] === undefined) {
         throw new Error(`Key ${keys[0]} does not exist in Clay Storage`);
       }
 
