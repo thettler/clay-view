@@ -1,29 +1,32 @@
 # clay-view
 
-## Project setup
-```
-yarn install
-```
+## Features
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+### HTML Tag
+* Css Classes (string, array, object - Syntax)
+* Css Styles (string, array, object - Syntax)
+* DomProps
+* Attributes
+* Ref
+* Inner Text
+* Children
 
-### Compiles and minifies for production
-```
-yarn build
-```
+### Inline Components
+* Css Classes (string, array, object - Syntax)
+* Css Styles (string, array, object - Syntax)
+* DomProps
+* Attributes
+* Props
+* Inner Text
+* Children
+* slot/named slot
 
-### Run your unit tests
-```
-yarn test:unit
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Single File Components
+* Css Classes (string, array, object - Syntax)
+* Css Styles (string, array, object - Syntax)
+* DomProps
+* Attributes
+* Props
+* Inner Text
+* Children
+* slot/named slot
