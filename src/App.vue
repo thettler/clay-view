@@ -1,6 +1,6 @@
 <template>
     <div>
-    <clay-view v-model="schema"/>
+        <clay-view v-model="schema"/>
         <button @click="bla">some</button>
     </div>
 </template>
@@ -11,7 +11,6 @@ import { CreateElement } from 'vue';
 import ClayView from '@/ClayView.vue';
 import { ClayNode } from '@/typings/clay.d';
 import ClayStorage from '@/ClayStorage.vue';
-import DefaultStorageDriver from '@/DefaultStorageDriver';
 
     @Component({
       name: 'App',
@@ -24,12 +23,44 @@ export default class App extends Vue {
 
         schema: ClayNode = {
           clayKey: 'key',
-          component: 'div',
-          children: {
-            clayKey: 'child',
-            component: 'span',
-            text: 'lalal',
-            show: true,
+          component: {
+            template: '<div><input type="text" v-model="data" /><slot :scopedData="data" /></div>',
+            data() {
+              return {
+                data: 'initalData',
+              };
+            },
+          },
+          scopedSlots: {
+            default: {
+              key: 'rootSlot1',
+              content: {
+                clayKey: 'slotChild',
+                component: {
+                  template: '<div><div v-text="bla"></div> <slot childScopeData="childData"></slot></div>',
+                  props: ['bla'],
+                },
+                props: {
+                  ':bla': 'rootSlot1#scopedData',
+                },
+                scopedSlots: {
+                  default: {
+                    key: 'childSlot',
+                    content: {
+                      clayKey: 'slotChildChild',
+                      component: {
+                        template: '<div><div v-text="bla"></div><div v-text="blaBla"></div></div>',
+                        props: ['bla', 'blaBla'],
+                      },
+                      props: {
+                        ':bla': 'rootSlot1#scopedData',
+                        ':blaBla': 'childSlot#childScopeData',
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         };
 

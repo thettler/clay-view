@@ -8,6 +8,7 @@ import {
 } from 'vue';
 import { ClayNode } from '@/typings/clay.d';
 import ClayNodeBuilder from '@/ClayNodeBuilder';
+import DefaultStorageDriver from '@/DefaultStorageDriver';
 
     @Component({
       name: 'ClayView',
@@ -25,7 +26,7 @@ export default class ClayView extends Vue {
         protected internalSchema: ClayNode = this.schema;
 
         render(h: CreateElement): VNode|undefined {
-          const clayNodeBuilder = new ClayNodeBuilder(h, this.components);
+          const clayNodeBuilder = new ClayNodeBuilder(h, this.components, new DefaultStorageDriver());
           return clayNodeBuilder.parse(this.internalSchema);
         }
 }

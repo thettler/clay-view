@@ -5,20 +5,18 @@ import {
   ClayEvent, ClayNode, ClayScopedSlot, StorageDriver,
 } from '@/typings/clay.d';
 import DefaultStorageDriver from '@/DefaultStorageDriver';
-import ScopedSlotStorageDriver from '@/ScopedSlotStorageDriver';
+import { mapObject, mapObjectWithKey } from '@/support';
 
 export default class ClayNodeBuilder {
-    protected storages: { [key: string]: StorageDriver } = {};
-
-    protected slotStorages?: ScopedSlotStorageDriver;
+    protected storage: DefaultStorageDriver;
 
     protected h: CreateElement;
 
     protected components: { [key: string]: Component };
 
-    constructor(h: CreateElement, components: { [key: string]: Component }, slotStorage?: ScopedSlotStorageDriver) {
+    constructor(h: CreateElement, components: { [key: string]: Component }, storage: DefaultStorageDriver) {
       this.h = h;
-      this.slotStorages = slotStorage;
+      this.storage = storage;
       this.components = components;
     }
 
@@ -29,28 +27,8 @@ export default class ClayNodeBuilder {
     protected validateCNode(cNode: ClayNode): void {
     }
 
-    protected mapObject(obj: { [key: string]: any }, callback: (value: any, key: string) => any) {
-      const newObj: { [key: string]: any } = {};
-
-      Object.keys(obj).forEach((key: string) => {
-        newObj[key] = callback(obj[key], key);
-      });
-
-      return newObj;
-    }
-
-    protected mapObjectWithKey(obj: { [key: string]: any }, callback: (value: any, key: string) => any) {
-      let newObj: { [key: string]: any } = {};
-
-      Object.keys(obj).forEach((key: string) => {
-        newObj = { ...newObj, ...callback(obj[key], key) };
-      });
-
-      return newObj;
-    }
-
     protected resolveBindableObject(obj: { [key: string]: any }, cNode: ClayNode) {
-      return this.mapObjectWithKey(obj, (value: any, key: string): { [key: string]: any } => {
+      return mapObjectWithKey(obj, (value: any, key: string): { [key: string]: any } => {
         if (key[0] !== ':') {
           return { [key]: value };
         }
@@ -111,25 +89,16 @@ export default class ClayNodeBuilder {
         return {};
       }
 
-      return this.mapObject(
+      return mapObject(
         clayNode.scopedSlots,
         (scopedSlot: ClayScopedSlot) => (props: any) => {
-          if (!this.slotStorages) {
-            const slotStorage = new ScopedSlotStorageDriver({ [scopedSlot.key]: props });
-            const builder = new ClayNodeBuilder(this.h, this.components, slotStorage);
-            return builder.parse(scopedSlot.content);
-          }
-
-          const slotStorage = new ScopedSlotStorageDriver(
-            {
-              ...(this.slotStorages.store || {}),
-              [scopedSlot.key]: {
-                ...props,
-              },
+          this.storage.addScopeStore({
+            [scopedSlot.key]: {
+              ...props,
             },
-          );
+          });
 
-          const builder = new ClayNodeBuilder(this.h, this.components, slotStorage);
+          const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
           return builder.parse(scopedSlot.content);
         },
       );
@@ -293,25 +262,12 @@ export default class ClayNodeBuilder {
       this.setCNodeStorage(CNode.clayKey, CNode.data);
     }
 
-    getCNodeStorage(clayKey: string): StorageDriver {
-      return this.storages[clayKey];
-    }
-
     setCNodeStorage(clayKey: string, data: { [key: string]: any } = {}): StorageDriver {
-      this.storages[clayKey] = new DefaultStorageDriver(data);
-      return this.storages[clayKey];
+      return this.storage.addDataStore(data);
     }
 
-    resolveBinding(path: string, CNode: ClayNode): any {
-      if (!path.includes('#', 1)) {
-        return this.getCNodeStorage(CNode.clayKey).get(path);
-      }
-
-      if (!this.slotStorages) {
-        throw new Error('No Scoped Slot Context');
-      }
-
-      return this.slotStorages.get(path);
+    resolveBinding(path: string, c:any): any {
+      return this.storage.get(path);
     }
 
     resolveComponent(component: string|Component):string|Component {
