@@ -5,13 +5,13 @@ import { ClayNode } from '@/typings/clay.d';
 describe('Clay View binding', () => {
   it('to reactive data', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div v-text="myProp"></div>', props: ['myProp'] },
       data: {
         myData: 'storageValue',
       },
       props: {
-        ':myProp': 'myData',
+        ':myProp': 'root::myData',
       },
     };
 
@@ -24,13 +24,13 @@ describe('Clay View binding', () => {
 
   it('to reactive nested data', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div v-text="myNestedProp"></div>', props: ['myNestedProp'] },
       data: {
         myNestedData: { more: { value: 'nestedValue' } },
       },
       props: {
-        ':myNestedProp': 'myNestedData.more.value',
+        ':myNestedProp': 'root::myNestedData.more.value',
       },
     };
 
@@ -43,12 +43,12 @@ describe('Clay View binding', () => {
 
   it('class with bound string', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div></div>' },
       data: {
         class: 'boundClass',
       },
-      ':class': 'class',
+      ':class': 'root::class',
     };
 
     const wrapper = mount(ClayView, {
@@ -60,12 +60,12 @@ describe('Clay View binding', () => {
 
   it('class with bound array', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div></div>' },
       data: {
         class: ['boundClass', 'more'],
       },
-      ':class': 'class',
+      ':class': 'root::class',
     };
 
     const wrapper = mount(ClayView, {
@@ -77,12 +77,12 @@ describe('Clay View binding', () => {
 
   it('class with bound object', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div></div>' },
       data: {
         class: { boundClass: true, more: true, notThere: false },
       },
-      ':class': 'class',
+      ':class': 'root::class',
     };
 
     const wrapper = mount(ClayView, {
@@ -94,13 +94,13 @@ describe('Clay View binding', () => {
 
   it('class can be merged with static class', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: { template: '<div></div>' },
       data: {
         class: { boundClass: true },
       },
       class: 'staticClass',
-      ':class': 'class',
+      ':class': 'root::class',
     };
 
     const wrapper = mount(ClayView, {
@@ -112,13 +112,13 @@ describe('Clay View binding', () => {
 
   it('domProps', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: 'input',
       data: {
         myData: 'boundDomProp',
       },
       domProps: {
-        ':value': 'myData',
+        ':value': 'root::myData',
       },
     };
 
@@ -131,13 +131,13 @@ describe('Clay View binding', () => {
 
   it('styles', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: 'div',
       data: {
         style: 'red',
       },
       style: {
-        ':color': 'style',
+        ':color': 'root::style',
       },
     };
 
@@ -150,12 +150,12 @@ describe('Clay View binding', () => {
 
   it('attrs', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: 'div',
       data: {
         id: 'boundId',
       },
-      attrs: { ':id': 'id' },
+      attrs: { ':id': 'root::id' },
     };
 
     const wrapper = mount(ClayView, {
@@ -167,12 +167,12 @@ describe('Clay View binding', () => {
 
   it('bound to textchild', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: 'div',
       data: {
         text: 'text content',
       },
-      ':text': 'text',
+      ':text': 'root::text',
     };
 
     const wrapper = mount(ClayView, {
@@ -180,5 +180,26 @@ describe('Clay View binding', () => {
     });
 
     expect(wrapper.html()).toBe('<div>text content</div>');
+  });
+
+  it('works with nested values as well', () => {
+    const schema: ClayNode = {
+      namespace: 'parent',
+      component: 'div',
+      data: {
+        text: 'text content',
+      },
+      children: {
+        namespace: 'child',
+        component: 'span',
+        ':text': 'parent::text',
+      },
+    };
+
+    const wrapper = mount(ClayView, {
+      propsData: { schema },
+    });
+
+    expect(wrapper.html()).toBe('<div><span>text content</span></div>');
   });
 });

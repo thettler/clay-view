@@ -2,7 +2,7 @@ import { Component } from 'vue';
 
 export interface ClayNode {
     component: string | Component
-    clayKey: string
+    namespace: string
     children?: ClayNode[] | ClayNode
     'text'?: string
     ':text'?: string
@@ -28,7 +28,7 @@ export interface ClayNode {
     }
     data?: { [key: string]: any }
     scopedSlots?: {
-        [key: string]: ClayScopedSlot;
+        [key: string]: ClayNode;
     }
 }
 
@@ -36,11 +36,4 @@ export type ClayEvent = Function | string;
 
 export interface StorageDriver {
     get(key: string, options?: any): any;
-
-    set(key: string, value: any, options?: any): void;
-}
-
-export interface ClayScopedSlot {
-    key: string
-    content: ClayNode
 }

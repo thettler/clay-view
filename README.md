@@ -24,7 +24,7 @@ export default {
         data(){
             return {
                 schema: {
-                    clayKey: 'someUniqueKey',
+                    namespace: 'someUniqueKey',
                     component: 'div'
                 }, 
             }           
@@ -39,11 +39,11 @@ This will render be rendered as :
 
 ## The CNode structure
 
-### ClayKey
-The `clayKey` is a required unique key that must be present in every CNode;
+### namespace
+The `namespace` is a required unique key that must be present in every CNode;
 ```ts
 {
-  clayKey: string 
+  namespace: string 
 }
 ```
 
@@ -54,12 +54,12 @@ For a simple `HtmlTag` simply put the tag name in.
 ```js
 // Will render an <div>
 const DivCNode={
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
 }
 // Will render an <button>
 const ButtonCNode={
-  clayKey: 'key',
+  namespace: 'key',
   component: 'button',
 }
 ```
@@ -71,7 +71,7 @@ The first one is you simply use a global registered `VueComponent`. In this case
 Vue.component('my-global-component', {/* ... */});
 // Will render the registered <my-global-component> Vue Component
 const GlobalComponentCNode={
-  clayKey: 'key',
+  namespace: 'key',
   component: 'my-global-component',
 }
 ```
@@ -92,7 +92,7 @@ export default {
     data(){
         return {
             schema: {
-                clayKey: 'someUniqueKey',
+                namespace: 'someUniqueKey',
                 component: 'MyLocalComponent'
             },   
             components: {MyLocalComponent}
@@ -107,7 +107,7 @@ The third option is to use put your imported component directly into the CNode.
 import MyLocalComponent from 'MyLocalComponent.vue';
 // Will render MyLocalComponent Vue Component
 const GlobalComponentCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: MyLocalComponent,
 }
 ````
@@ -118,7 +118,7 @@ The last option is to use `inlineComponents`. You can simply define your compone
 ````js
 // Will render <div>My inline component</div> Vue Component
 const GlobalComponentCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: {
     template: '<div>My inline component</div>'
     /* all the other vue Component Stuff */
@@ -132,10 +132,10 @@ If your `CNode` is representing an `component` with `slots` you can put them her
 ````js
 // Will render <div><span></span></div>
 const ChildrenCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   children: {
-    clayKey: 'childKey',
+    namespace: 'childKey',
     component: 'span'
   }
 }
@@ -147,7 +147,7 @@ The `text` key is basically the `v-text` directive from vue.
 ```js
 // Will render <div>Some Text</div>
 const TextCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   text: 'Some Text'
 }
@@ -158,7 +158,7 @@ The `if` key is basically the `v-if` directive from vue.
 ```js
 // Will render nothing
 const TextCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   if: false
 }
@@ -169,7 +169,7 @@ The `show` key is basically the `v-show` directive from vue.
 ```js
 // Will render <div style="display:none;"></div>
 const TextCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   show: false
 }
@@ -181,21 +181,21 @@ an `string`, `array` or`object` to define your classes
 ```js
 // Will render <div class="someClass"></div>
 const ClassStringCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   class: 'someClass'
 }
 
 // Will render <div class="someClass someMoreClass"></div>
 const ClassArrayCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   class: ['someClass','someMoreClass']
 }
 
 // Will render <div class="someClass"></div>
 const ClassObjectCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   class: {
     'someClass': true,
@@ -209,7 +209,7 @@ The `style` key lets you add inline Styles with the [Object Syntax](https://vuej
 ```js
 // Will render <div style="color:red"></div>
 const StyledCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   style: {
     color: 'red'
@@ -222,7 +222,7 @@ The `attrs` key lets you add normal Html attributes as object
 ```js
 // Will render <div id="foo"></div>
 const StyledCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   attrs: {
     id: 'foo'
@@ -247,7 +247,7 @@ The `props` key lets you add props to components
 import PropComponent from './PropComponent.vue'
 // Will render <div>foo</div>
 const StyledCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: PropComponent,
   props: {
     myProp: 'foo'
@@ -260,7 +260,7 @@ The `domProps` key lets you add `DOM Properties` to the `CNode`.
 ```js
 // Will render <input value="foo" />
 const DomPropsCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'input',
   domProps: {
     value: 'foo'
@@ -272,7 +272,7 @@ const DomPropsCNode = {
 The `slot` key lets you define a Slot name like `v-slot`.
 ```js
 const SlotCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   slot: 'slotName'
 }
@@ -282,7 +282,7 @@ const SlotCNode = {
 The `key` key lets you define a key for a CNode. Important for `v-for` loops.
 ```js
 const SlotCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   key: 'someKey'
 }
@@ -292,7 +292,7 @@ const SlotCNode = {
 The `ref` key is the same as the vue [ref](https://vuejs.org/v2/api/#ref).
 ```js
 const SlotCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   ref: 'someRef'
 }
@@ -302,7 +302,7 @@ const SlotCNode = {
 If you are applying the same ref name to multiple elements in the CNode. This will make `$refs.myRef` become an array
 ```js
 const SlotCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   refInFor: false
 }
@@ -312,7 +312,7 @@ const SlotCNode = {
 With the `on` key you can specify event handlers. They work the same as [here](https://vuejs.org/v2/guide/render-function.html#Event-amp-Key-Modifiers) explained
 ```js
 const EventCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'button',
   on: {
     click: () => console.log('Hurray')
@@ -324,7 +324,7 @@ const EventCNode = {
 Same as the `on` only for Native Events [more](https://vuejs.org/v2/guide/components-custom-events.html#Binding-Native-Events-to-Components)
 ```js
 const EventCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'button',
   nativeOn: {
     click: () => console.log('Hurray')
@@ -339,7 +339,7 @@ that is reactive and can be used inside of the `CNode`.
 To register the `data` you add a `data` key to your `CNode`.
 ```js
 const DataCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   data: {
     myReactiveData: 'SomeData'
@@ -349,7 +349,7 @@ const DataCNode = {
 Now you can bind this data to our other keys. For example the `text`:
 ```js
 const DataCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   ':text': 'myReactiveData',
   data: {
@@ -365,7 +365,7 @@ Then we specify the key of the value inside of our `data`. The Rendered output w
 If we want to get values from an more nested object we can use dot notation to get them:
 ```js
 const DataCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   ':text': 'myReactiveData.nested.inside',
   data: {
@@ -383,7 +383,7 @@ const DataCNode = {
 You cant bind all of the Keys of an CNode but here is an list of all the keys that allow binding:
 ```js
 const DataCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: 'div',
   ':text': 'myReactiveData',
   ':class': 'myReactiveData',
@@ -445,7 +445,7 @@ Translated in a CNode it would look like this:
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 
 const scopedSloltCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: ScopedSlotComponent,
   scopedSlots: {
     default: {
@@ -468,13 +468,13 @@ In action it looks like this.
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 
 const scopedSloltCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: ScopedSlotComponent,
   scopedSlots: {
     default: {
       key: 'props',
       content: { 
-        clayKey: 'child',
+        namespace: 'child',
         component: 'button',
         ':text':'props#scopedValue',
         onNative: {
@@ -495,20 +495,20 @@ import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 import OtherScopedSlotComponent from 'OtherScopedSlotComponent.vue';
 
 const scopedSloltCNode = {
-  clayKey: 'key',
+  namespace: 'key',
   component: ScopedSlotComponent,
   scopedSlots: {
     default: {
       key: 'props',
       content: { 
-        clayKey: 'child',
+        namespace: 'child',
         component: OtherScopedSlotComponent,
         ':class': 'props#scopedValue',
         scopedSlots: {
          default: {
             key: 'childScopedSlot',
             content: { 
-              clayKey: 'nestedChild',
+              namespace: 'nestedChild',
               component: 'button',
               ':text':'childScopedSlot#scopedValue',
               onNative: {

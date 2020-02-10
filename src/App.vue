@@ -22,7 +22,7 @@ export default class App extends Vue {
   }
 
         schema: ClayNode = {
-          clayKey: 'key',
+          namespace: 'root',
           component: {
             template: '<div><input type="text" v-model="data" /><slot :scopedData="data" /></div>',
             data() {
@@ -33,30 +33,28 @@ export default class App extends Vue {
           },
           scopedSlots: {
             default: {
-              key: 'rootSlot1',
-              content: {
-                clayKey: 'slotChild',
-                component: {
-                  template: '<div><div v-text="bla"></div> <slot childScopeData="childData"></slot></div>',
-                  props: ['bla'],
-                },
-                props: {
-                  ':bla': 'rootSlot1#scopedData',
-                },
-                scopedSlots: {
-                  default: {
-                    key: 'childSlot',
-                    content: {
-                      clayKey: 'slotChildChild',
-                      component: {
-                        template: '<div><div v-text="bla"></div><div v-text="blaBla"></div></div>',
-                        props: ['bla', 'blaBla'],
-                      },
-                      props: {
-                        ':bla': 'rootSlot1#scopedData',
-                        ':blaBla': 'childSlot#childScopeData',
-                      },
-                    },
+              namespace: 'slotChild',
+              component: {
+                template: '<div><div v-text="bla"></div> <slot :childScopeData="\'childData\' + bla"></slot></div>',
+                props: ['bla'],
+              },
+              props: {
+                ':bla': 'root/slot/default::scopedData',
+              },
+              data: {
+                data: 'something',
+              },
+              scopedSlots: {
+                default: {
+                  namespace: 'slotChildChild',
+                  component: {
+                    template: '<div><div v-text="bla"></div><div v-text="blaBla"></div> {{blaBlaa}}</div>',
+                    props: ['bla', 'blaBla', 'blaBlaa'],
+                  },
+                  props: {
+                    ':bla': 'root/slot/default::scopedData',
+                    ':blaBla': 'slotChild/slot/default::childScopeData',
+                    ':blaBlaa': 'slotChild::data',
                   },
                 },
               },

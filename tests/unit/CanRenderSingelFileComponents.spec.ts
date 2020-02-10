@@ -9,7 +9,7 @@ import { ClayNode } from '@/typings/clay.d';
 describe('Clay View can render single File Component', () => {
   it('without any attributes', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
     };
 
@@ -22,7 +22,7 @@ describe('Clay View can render single File Component', () => {
 
   it('from local clay view Register', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'BasicTestComponent',
     };
 
@@ -35,7 +35,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with classes string Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       class: 'myClass',
     };
@@ -48,7 +48,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with classes array Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       class: ['myArrClass'],
 
@@ -62,7 +62,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with classes object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       class: { myObjClass: true },
 
@@ -76,7 +76,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with styles object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       style: { color: 'red' },
     };
@@ -90,7 +90,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with domProps', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       domProps: { value: 'propValue' },
     };
@@ -104,7 +104,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with props', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestWithPropComponent,
       props: { myProp: 'propValue' },
     };
@@ -118,20 +118,20 @@ describe('Clay View can render single File Component', () => {
 
   it('with slot', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestWithSlotComponent,
       children: [
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'span',
           children: [{
-            clayKey: 'key',
+            namespace: 'key',
             component: 'b',
             text: 'text',
           }],
         },
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'a',
           text: 'link',
         },
@@ -147,16 +147,16 @@ describe('Clay View can render single File Component', () => {
 
   it('with named slot', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestWithNamedSlotComponent,
       children: [
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: { template: '<span></span>' },
           slot: 'slot',
         },
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: { template: '<a></a>' },
         },
       ],
@@ -171,7 +171,7 @@ describe('Clay View can render single File Component', () => {
 
   it('with attrs', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: BasicTestComponent,
       attrs: { id: 'id' },
     };

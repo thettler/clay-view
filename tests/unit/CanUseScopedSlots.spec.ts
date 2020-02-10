@@ -5,7 +5,7 @@ import { ClayNode } from '@/typings/clay.d';
 describe('Clay View scoped slots', () => {
   it('props work', async (done) => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><input type="text" v-model="data" /><slot :scopedData="data" /></div>',
         data() {
@@ -16,13 +16,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: { template: '<div v-text="bla"></div>', props: ['bla'] },
-            props: {
-              ':bla': 'rootSlot#scopedData',
-            },
+          namespace: 'slotChild',
+          component: { template: '<div v-text="bla"></div>', props: ['bla'] },
+          props: {
+            ':bla': 'root/slot/default::scopedData',
           },
         },
       },
@@ -44,7 +41,7 @@ describe('Clay View scoped slots', () => {
 
   it('can be nested', async (done) => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><input type="text" v-model="data" /><slot :scopedData="data" /></div>',
         data() {
@@ -55,30 +52,24 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot1',
-          content: {
-            clayKey: 'slotChild',
-            component: {
-              template: '<div><div v-text="bla"></div> <slot childScopeData="childData"></slot></div>',
-              props: ['bla'],
-            },
-            props: {
-              ':bla': 'rootSlot1#scopedData',
-            },
-            scopedSlots: {
-              default: {
-                key: 'childSlot',
-                content: {
-                  clayKey: 'slotChildChild',
-                  component: {
-                    template: '<div><div v-text="bla"></div><div v-text="blaBla"></div></div>',
-                    props: ['bla', 'blaBla'],
-                  },
-                  props: {
-                    ':bla': 'rootSlot1#scopedData',
-                    ':blaBla': 'childSlot#childScopeData',
-                  },
-                },
+          namespace: 'child',
+          component: {
+            template: '<div><div v-text="bla"></div> <slot childScopeData="childData"></slot></div>',
+            props: ['bla'],
+          },
+          props: {
+            ':bla': 'root/slot/default::scopedData',
+          },
+          scopedSlots: {
+            default: {
+              namespace: 'slotChildChild',
+              component: {
+                template: '<div><div v-text="bla"></div><div v-text="blaBla"></div></div>',
+                props: ['bla', 'blaBla'],
+              },
+              props: {
+                ':bla': 'root/slot/default::scopedData',
+                ':blaBla': 'child/slot/default::childScopeData',
               },
             },
           },
@@ -99,7 +90,7 @@ describe('Clay View scoped slots', () => {
     console.error = () => {
     };
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -110,24 +101,18 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: {
-              template: '<div><slot childScopeData="childData"></slot></div>',
-              props: ['childSlot'],
-            },
-            props: {
-              ':childSlot': 'childSlot#childScopeData',
-            },
-            scopedSlots: {
-              default: {
-                key: 'childSlot',
-                content: {
-                  clayKey: 'slotChildChild',
-                  component: { template: '<div></div>', props: ['rootSlot', 'childSlot'] },
-                },
-              },
+          namespace: 'child',
+          component: {
+            template: '<div><slot childScopeData="childData"></slot></div>',
+            props: ['childSlot'],
+          },
+          props: {
+            ':childSlot': 'child/slot/default::childScopeData',
+          },
+          scopedSlots: {
+            default: {
+              namespace: 'slotChildChild',
+              component: { template: '<div></div>', props: ['rootSlot', 'childSlot'] },
             },
           },
         },
@@ -140,7 +125,7 @@ describe('Clay View scoped slots', () => {
       });
       expect(true).toBeFalsy();
     } catch (e) {
-      expect(e.message).toEqual('ScopedSlot childSlot does not exist');
+      expect(e.message).toEqual('Namespace child/slot/default does not exist');
     }
     console.error = consolError;
     done();
@@ -148,7 +133,7 @@ describe('Clay View scoped slots', () => {
 
   it('binding can be used in text', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -159,12 +144,9 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'span',
-            ':text': 'rootSlot#scopedData',
-          },
+          namespace: 'slotChild',
+          component: 'span',
+          ':text': 'root/slot/default::scopedData',
         },
       },
     };
@@ -178,7 +160,7 @@ describe('Clay View scoped slots', () => {
 
   it('domProps work', async (done) => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -189,13 +171,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'input',
-            domProps: {
-              ':value': 'rootSlot#scopedData',
-            },
+          namespace: 'slotChild',
+          component: 'input',
+          domProps: {
+            ':value': 'root/slot/default::scopedData',
           },
         },
       },
@@ -214,7 +193,7 @@ describe('Clay View scoped slots', () => {
 
   it('attrs work', async (done) => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -225,13 +204,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'div',
-            attrs: {
-              ':id': 'rootSlot#scopedData',
-            },
+          namespace: 'slotChild',
+          component: 'div',
+          attrs: {
+            ':id': 'root/slot/default::scopedData',
           },
         },
       },
@@ -247,7 +223,7 @@ describe('Clay View scoped slots', () => {
 
   it('styles work', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -258,13 +234,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'div',
-            style: {
-              ':color': 'rootSlot#scopedData',
-            },
+          namespace: 'slotChild',
+          component: 'div',
+          style: {
+            ':color': 'root/slot/default::scopedData',
           },
         },
       },
@@ -279,7 +252,7 @@ describe('Clay View scoped slots', () => {
 
   it('class work', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :scopedData="data" /></div>',
         data() {
@@ -290,12 +263,9 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'div',
-            ':class': 'rootSlot#scopedData',
-          },
+          namespace: 'slotChild',
+          component: 'div',
+          ':class': 'root/slot/default::scopedData',
         },
       },
     };
@@ -309,7 +279,7 @@ describe('Clay View scoped slots', () => {
   it('events work', () => {
     let eventTriggered = false;
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :event="scopeEvent" /></div>',
         methods: {
@@ -320,13 +290,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: 'button',
-            on: {
-              ':click': 'rootSlot#event',
-            },
+          namespace: 'slotChild',
+          component: 'button',
+          on: {
+            ':click': 'root/slot/default::event',
           },
         },
       },
@@ -343,7 +310,7 @@ describe('Clay View scoped slots', () => {
   it('native events work', () => {
     let eventTriggered = false;
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'root',
       component: {
         template: '<div><slot :event="scopeEvent" /></div>',
         methods: {
@@ -354,13 +321,10 @@ describe('Clay View scoped slots', () => {
       },
       scopedSlots: {
         default: {
-          key: 'rootSlot',
-          content: {
-            clayKey: 'slotChild',
-            component: { template: '<button></button>' },
-            nativeOn: {
-              ':click': 'rootSlot#event',
-            },
+          namespace: 'slotChild',
+          component: { template: '<button></button>' },
+          nativeOn: {
+            ':click': 'root/slot/default::event',
           },
         },
       },

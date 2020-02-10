@@ -5,7 +5,7 @@ import { ClayNode } from '@/typings/clay.d';
 describe('Clay View can render normal html', () => {
   it('without any attributes', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'h1',
     };
 
@@ -18,7 +18,7 @@ describe('Clay View can render normal html', () => {
 
   it('with classes string Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'h1',
       class: 'myClass',
     };
@@ -31,7 +31,7 @@ describe('Clay View can render normal html', () => {
 
   it('with classes array Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'h1',
       class: ['myArrClass'],
 
@@ -45,7 +45,7 @@ describe('Clay View can render normal html', () => {
 
   it('with classes object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'h1',
       class: { myObjClass: true },
 
@@ -59,7 +59,7 @@ describe('Clay View can render normal html', () => {
 
   it('with styles object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'h1',
       style: { color: 'red' },
     };
@@ -73,7 +73,7 @@ describe('Clay View can render normal html', () => {
 
   it('with domProps', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'input',
       domProps: { value: 'propValue' },
     };
@@ -87,7 +87,7 @@ describe('Clay View can render normal html', () => {
 
   it('with attrs', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'input',
       attrs: { id: 'id' },
     };
@@ -101,7 +101,7 @@ describe('Clay View can render normal html', () => {
 
   it('with ref', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'input',
       ref: 'ref',
     };
@@ -115,7 +115,7 @@ describe('Clay View can render normal html', () => {
 
   it('with inner text', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'div',
       text: 'Some Text',
     };
@@ -129,20 +129,20 @@ describe('Clay View can render normal html', () => {
 
   it('with inner children', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: 'div',
       children: [
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'span',
           children: [{
-            clayKey: 'key',
+            namespace: 'key',
             component: 'b',
             text: 'text',
           }],
         },
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'a',
           text: 'link',
         },

@@ -5,7 +5,7 @@ import { ClayNode } from '@/typings/clay.d';
 describe('Clay View can render inline Components', () => {
   it('without any attributes', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div>Component</div>' },
     };
 
@@ -18,7 +18,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with classes string Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div>Component</div>' },
       class: 'myClass',
     };
@@ -31,7 +31,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with classes array Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div>Component</div>' },
       class: ['myArrClass'],
 
@@ -45,7 +45,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with classes object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div>Component</div>' },
       class: { myObjClass: true },
 
@@ -59,7 +59,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with styles object Syntax', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div></div>' },
       style: { color: 'red' },
     };
@@ -73,7 +73,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with domProps', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div>Component</div>' },
       domProps: { value: 'propValue' },
     };
@@ -87,7 +87,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with props', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div v-text="myProp" />', props: ['myProp'] },
       props: { myProp: 'propValue' },
     };
@@ -101,20 +101,20 @@ describe('Clay View can render inline Components', () => {
 
   it('with slot', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div><slot /></div>' },
       children: [
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'span',
           children: [{
-            clayKey: 'key',
+            namespace: 'key',
             component: 'b',
             text: 'text',
           }],
         },
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'a',
           text: 'link',
         },
@@ -130,17 +130,17 @@ describe('Clay View can render inline Components', () => {
 
   it('with named slot', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
 
       component: { template: '<div><div data="default"><slot/></div><div data="slot"><slot name="slot" /></div></div>' },
       children: [
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: { template: '<span></span>' },
           slot: 'slot',
         },
         {
-          clayKey: 'key',
+          namespace: 'key',
           component: { template: '<a></a>' },
         },
       ],
@@ -155,7 +155,7 @@ describe('Clay View can render inline Components', () => {
 
   it('with attrs', () => {
     const schema: ClayNode = {
-      clayKey: 'key',
+      namespace: 'key',
       component: { template: '<div></div>' },
       attrs: { id: 'id' },
     };

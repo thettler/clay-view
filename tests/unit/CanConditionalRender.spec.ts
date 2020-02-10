@@ -1,16 +1,15 @@
-import { mount, Wrapper } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import ClayView from '@/ClayView.vue';
-import { ClayNode } from '@/typings/clay.d';
 
 describe('Clay View can render conditionally', () => {
   it('with if true', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
             if: true,
           },
@@ -25,10 +24,10 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
             if: false,
           },
@@ -43,12 +42,12 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
-            ':if': 'render',
+            ':if': 'childHidden::render',
             data: {
               render: false,
             },
@@ -64,12 +63,12 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
-            ':if': 'render',
+            ':if': 'childHidden::render',
             data: {
               render: true,
             },
@@ -85,16 +84,13 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'root',
           component: { template: '<div><slot :show="false"></slot></div>' },
           scopedSlots: {
             default: {
-              key: 'scope',
-              content: {
-                clayKey: 'childHidden',
-                component: 'span',
-                ':if': 'scope#show',
-              },
+              namespace: 'childHidden',
+              component: 'span',
+              ':if': 'root/slot/default::show',
             },
           },
         },
@@ -108,10 +104,10 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
             show: true,
           },
@@ -126,10 +122,10 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
             show: false,
           },
@@ -144,12 +140,12 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
-            ':show': 'render',
+            ':show': 'childHidden::render',
             data: {
               render: false,
             },
@@ -165,12 +161,12 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'key',
           component: 'div',
           children: {
-            clayKey: 'childHidden',
+            namespace: 'childHidden',
             component: 'span',
-            ':show': 'render',
+            ':show': 'childHidden::render',
             data: {
               render: true,
             },
@@ -186,16 +182,13 @@ describe('Clay View can render conditionally', () => {
     const wrapper = mount(ClayView, {
       propsData: {
         schema: {
-          clayKey: 'key',
+          namespace: 'root',
           component: { template: '<div><slot :show="false"></slot></div>' },
           scopedSlots: {
             default: {
-              key: 'scope',
-              content: {
-                clayKey: 'childHidden',
-                component: 'span',
-                ':show': 'scope#show',
-              },
+              namespace: 'childHidden',
+              component: 'span',
+              ':show': 'root/slot/default::show',
             },
           },
         },

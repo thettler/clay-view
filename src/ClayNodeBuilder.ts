@@ -2,7 +2,7 @@ import {
   Component, CreateElement, VNode, VNodeChildren, VNodeData,
 } from 'vue';
 import {
-  ClayEvent, ClayNode, ClayScopedSlot, StorageDriver,
+  ClayEvent, ClayNode, StorageDriver,
 } from '@/typings/clay.d';
 import DefaultStorageDriver from '@/DefaultStorageDriver';
 import { mapObject, mapObjectWithKey } from '@/support';
@@ -78,10 +78,14 @@ export default class ClayNodeBuilder {
       }
 
       if (Array.isArray(clayNode.children)) {
-        return (clayNode.children.map((child: ClayNode) => this.parseClayNode(child))) as VNodeChildren;
+        return (clayNode.children.map((child: ClayNode) => {
+          const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
+          return builder.parse(child);
+        }) as VNodeChildren);
       }
 
-      return [this.parseClayNode(clayNode.children)] as VNodeChildren;
+      const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
+      return [builder.parse(clayNode.children)] as VNodeChildren;
     }
 
     parseScopedSlots(clayNode: ClayNode) {
@@ -91,15 +95,11 @@ export default class ClayNodeBuilder {
 
       return mapObject(
         clayNode.scopedSlots,
-        (scopedSlot: ClayScopedSlot) => (props: any) => {
-          this.storage.addScopeStore({
-            [scopedSlot.key]: {
-              ...props,
-            },
-          });
+        (scopedSlot: ClayNode, slotName: string) => (props: any) => {
+          this.storage.addScopeStore(clayNode.namespace, slotName, props);
 
           const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
-          return builder.parse(scopedSlot.content);
+          return builder.parse(scopedSlot);
         },
       );
     }
@@ -259,11 +259,7 @@ export default class ClayNodeBuilder {
     }
 
     registerData(CNode: ClayNode) {
-      this.setCNodeStorage(CNode.clayKey, CNode.data);
-    }
-
-    setCNodeStorage(clayKey: string, data: { [key: string]: any } = {}): StorageDriver {
-      return this.storage.addDataStore(data);
+      this.storage.addData({ [CNode.namespace]: CNode.data });
     }
 
     resolveBinding(path: string, c:any): any {

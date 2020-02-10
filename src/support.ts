@@ -1,3 +1,5 @@
+import { cloneDeep as _cloneDeep } from 'lodash';
+
 export const mapObject = (obj: { [key: string]: any }, callback: (value: any, key: string) => any) => {
   const newObj: { [key: string]: any } = {};
 
@@ -17,3 +19,5 @@ export const mapObjectWithKey = (obj: { [key: string]: any }, callback: (value: 
 
   return newObj;
 };
+
+export const cloneDeep = (obj: any): any => _cloneDeep(obj);
