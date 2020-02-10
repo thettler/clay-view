@@ -24,7 +24,7 @@ export default {
         data(){
             return {
                 schema: {
-                    namespace: 'someUniqueKey',
+                    namespace: 'someUniqueNamespace',
                     component: 'div'
                 }, 
             }           
@@ -39,8 +39,8 @@ This will render be rendered as :
 
 ## The CNode structure
 
-### namespace
-The `namespace` is a required unique key that must be present in every CNode;
+### Namespace
+The `namespace` is a required unique key that must be present in every CNode. It is later used to get and identify the data of this CNode
 ```ts
 {
   namespace: string 
@@ -349,25 +349,25 @@ const DataCNode = {
 Now you can bind this data to our other keys. For example the `text`:
 ```js
 const DataCNode = {
-  namespace: 'key',
+  namespace: 'ownNamespace',
   component: 'div',
-  ':text': 'myReactiveData',
+  ':text': 'ownNamespace::myReactiveData',
   data: {
     myReactiveData: 'SomeData'
   }
 }
 ```
-As you can see we tell clay, by prefixing the key with a `:` that we want to bind this key to an different value.
-Then we specify the key of the value inside of our `data`. The Rendered output will now be: 
+As you can see we tell clay, by prefixing the key with a `:`, that we want to bind this key to an different value.
+Then we specify the key of the value inside of our `data` and prefix it with our `namespace` separated by `::`. The Rendered output will now be: 
 ````html
 <div>SomeData</div>
 ````
 If we want to get values from an more nested object we can use dot notation to get them:
 ```js
 const DataCNode = {
-  namespace: 'key',
+  namespace: 'ownNamespace',
   component: 'div',
-  ':text': 'myReactiveData.nested.inside',
+  ':text': 'ownNamespace::myReactiveData.nested.inside',
   data: {
     myReactiveData: {
       nested: {
@@ -380,32 +380,52 @@ const DataCNode = {
 ```html
 <div>Foo</div>
 ```
+Because of the namespace we can also access data from a parent inside of an child:
+```js
+const DataCNode = {
+  namespace: 'parentNamespace',
+  component: 'div',
+  data: {
+    myReactiveData: 'Foo'
+  },  
+  children: {
+    namespace: 'childNamespace',
+      component: 'span',
+      ':text': 'parentNamespace::myReactiveData',
+  } 
+}
+```
+```html
+<div><span>Foo</span></div>
+```
+> You can not use the child data inside of the parent!
+
 You cant bind all of the Keys of an CNode but here is an list of all the keys that allow binding:
 ```js
 const DataCNode = {
-  namespace: 'key',
+  namespace: 'namespace',
   component: 'div',
-  ':text': 'myReactiveData',
-  ':class': 'myReactiveData',
-  ':if': 'myReactiveData',
-  ':show': 'myReactiveData',
+  ':text': 'namespace::myReactiveData',
+  ':class': 'namespace::myReactiveData',
+  ':if': 'namespace::myReactiveData',
+  ':show': 'namespace::myReactiveData',
   'attrs': {
-    ':id' : 'myReactiveData'
+    ':id' : 'namespace::myReactiveData'
   },
   'style': {
-    ':color' : 'myReactiveData'
+    ':color' : 'namespace::myReactiveData'
   },
   'props': {
-    ':myProp' : 'myReactiveData'
+    ':myProp' : 'namespace::myReactiveData'
   },
   'domProps': {
-    ':myDomProp' : 'myReactiveData'
+    ':myDomProp' : 'namespace::myReactiveData'
   },
   'on': {
-    ':click': 'myReactiveFunction'
+    ':click': 'namespace::myReactiveFunction'
   },
   'nativeOn': {
-    ':click': 'myReactiveFunction'
+    ':click': 'namespace::myReactiveFunction'
   },
   data: {
     myReactiveData: 'data',
@@ -468,26 +488,23 @@ In action it looks like this.
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 
 const scopedSloltCNode = {
-  namespace: 'key',
+  namespace: 'slotNamespace',
   component: ScopedSlotComponent,
   scopedSlots: {
-    default: {
-      key: 'props',
-      content: { 
-        namespace: 'child',
-        component: 'button',
-        ':text':'props#scopedValue',
-        onNative: {
-          ':click': 'props#scopedFunction'
-        } 
-      }
+    default: {  
+      namespace: 'child',
+      component: 'button',
+      ':text':'slotNamespace/slot/default::scopedValue',
+      onNative: {
+        ':click': 'slotNamespace/slot/default::scopedFunction'
+      } 
     }
   }
 }
 ```
-As you can see we tell clay to bind the `text` and the `click` to an value. But because we dont want to use the `data` inside
-our CNode we start with the `key` of our `scopedSlot` and a `#` and than specify the value we want. We can use dot Notation
-for nested objects here as well. 
+As you can see we tell clay to bind the `text` and the `click` to an value. But because we want to use the `data` from our scoped slot 
+we prefix it with the `namespace` from the `CNode` with the `scopedSlot` and add the `/slot/` and the name of the slot ,in this case `default`.
+Now we can use out dot notation to get the data from the `scopedSlot`.  
 
 We can even nest scoped slots deeply and every Child will have access to all of his parent Scoped Slots.
 ```js
@@ -495,30 +512,24 @@ import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 import OtherScopedSlotComponent from 'OtherScopedSlotComponent.vue';
 
 const scopedSloltCNode = {
-  namespace: 'key',
+  namespace: 'rootSlot',
   component: ScopedSlotComponent,
   scopedSlots: {
     default: {
-      key: 'props',
-      content: { 
-        namespace: 'child',
-        component: OtherScopedSlotComponent,
-        ':class': 'props#scopedValue',
-        scopedSlots: {
-         default: {
-            key: 'childScopedSlot',
-            content: { 
-              namespace: 'nestedChild',
-              component: 'button',
-              ':text':'childScopedSlot#scopedValue',
-              onNative: {
-                ':click': 'props#scopedFunction'
-              } 
-            }
+      namespace: 'childSlot',
+      component: OtherScopedSlotComponent,
+      ':class': 'rootSlot/slot/default::scopedValue',
+      scopedSlots: {
+        default: {
+          namespace: 'nestedChild',
+          component: 'button',
+          ':text': 'childSlot/slot/default::scopedValue',
+          onNative: {
+            ':click': 'rootSlot/slot/default::scopedFunction'
           }
         }
       }
     }
   }
-}
+};
 ```
