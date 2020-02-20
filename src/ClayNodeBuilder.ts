@@ -1,11 +1,9 @@
 import {
   Component, CreateElement, VNode, VNodeChildren, VNodeData,
 } from 'vue';
-import {
-  ClayEvent, ClayNode, StorageDriver,
-} from '@/typings/clay.d';
+import { ClayEvent, ClayNode } from '@/typings/clay.d';
 import DefaultStorageDriver from '@/DefaultStorageDriver';
-import { mapObject, mapObjectWithKey } from '@/support';
+import { cloneDeep, mapObject, mapObjectWithKey } from '@/support';
 
 export default class ClayNodeBuilder {
     protected storage: DefaultStorageDriver;
@@ -20,7 +18,7 @@ export default class ClayNodeBuilder {
       this.components = components;
     }
 
-    public parse(cNode: ClayNode): VNode|undefined {
+    public parse(cNode: ClayNode): VNode | undefined {
       return this.parseClayNode(cNode);
     }
 
@@ -33,12 +31,12 @@ export default class ClayNodeBuilder {
           return { [key]: value };
         }
 
-        return { [key.substr(1)]: this.resolveBinding(value, cNode) };
+        return { [key.substr(1)]: this.resolveBinding(value) };
       });
     }
 
 
-    parseClayNode(cNode: ClayNode): VNode|undefined {
+    parseClayNode(cNode: ClayNode): VNode | undefined {
       this.validateCNode(cNode);
 
       if (cNode.if !== undefined && !this.resolveCondition(cNode.if, cNode)) {
@@ -78,14 +76,59 @@ export default class ClayNodeBuilder {
       }
 
       if (Array.isArray(clayNode.children)) {
-        return (clayNode.children.map((child: ClayNode) => {
-          const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
-          return builder.parse(child);
-        }) as VNodeChildren);
+        return (clayNode.children.map((child: ClayNode) => this.makeNewBuilder().parse(child)) as VNodeChildren);
       }
 
-      const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
-      return [builder.parse(clayNode.children)] as VNodeChildren;
+      if (clayNode.children.for !== undefined || clayNode.children[':for'] !== undefined) {
+        return this.loopCNode(clayNode.children);
+      }
+
+      return [this.makeNewBuilder().parse(clayNode.children)] as VNodeChildren;
+    }
+
+    makeNewBuilder(storage ?: DefaultStorageDriver): ClayNodeBuilder {
+      return new ClayNodeBuilder(this.h, this.components, storage || this.storage);
+    }
+
+    loopCNode(cNode: ClayNode): VNodeChildren {
+      if (cNode.for === undefined && cNode[':for'] === undefined) {
+        return [];
+      }
+
+      let iterable: Object|any[] = [];
+
+      if (cNode.for) {
+        iterable = cNode.for;
+      }
+
+      if (cNode[':for']) {
+        iterable = this.resolveBinding(cNode[':for']);
+      }
+
+      if (Array.isArray(iterable)) {
+        return cloneDeep(iterable).map((value: any, index: number) => {
+          this.storage.addData({
+            [`${cNode.namespace}/for`]: {
+              index,
+              value,
+              key: undefined,
+            },
+          });
+          return this.makeNewBuilder().parse(cNode);
+        }) as VNodeChildren;
+      }
+
+      return Object.keys(iterable).map((key: string, index: number) => {
+        this.storage.addData({
+          [`${cNode.namespace}/for`]: {
+            index,
+            // @ts-ignore
+            value: iterable[key],
+            key,
+          },
+        });
+        return this.makeNewBuilder().parse(cNode);
+      }) as VNodeChildren;
     }
 
     parseScopedSlots(clayNode: ClayNode) {
@@ -157,6 +200,10 @@ export default class ClayNodeBuilder {
         vNodeData.key = clayNode.key;
       }
 
+      if (clayNode[':key']) {
+        vNodeData.key = this.resolveBinding(clayNode[':key']);
+      }
+
       if (clayNode.on) {
         vNodeData.on = this.makeEventListeners(clayNode, clayNode.on);
       }
@@ -205,7 +252,7 @@ export default class ClayNodeBuilder {
         return '';
       }
 
-      return this.resolveBinding(CNode[':text'], CNode);
+      return this.resolveBinding(CNode[':text']);
     }
 
     CNodeBoundClassesToVNode(CNode: ClayNode): { [key: string]: boolean } {
@@ -213,7 +260,7 @@ export default class ClayNodeBuilder {
         return {};
       }
 
-      const boundValue: any = this.resolveBinding(CNode[':class'], CNode);
+      const boundValue: any = this.resolveBinding(CNode[':class']);
 
       if (Array.isArray(boundValue)) {
         const classes: { [key: string]: boolean } = {};
@@ -262,22 +309,22 @@ export default class ClayNodeBuilder {
       this.storage.addData({ [CNode.namespace]: CNode.data });
     }
 
-    resolveBinding(path: string, c:any): any {
+    resolveBinding(path: string): any {
       return this.storage.get(path);
     }
 
-    resolveComponent(component: string|Component):string|Component {
+    resolveComponent(component: string | Component): string | Component {
       if (typeof component === 'string') {
         return this.components[component] || component;
       }
       return component;
     }
 
-    resolveCondition(condition: string|boolean, CNode: ClayNode):boolean {
+    resolveCondition(condition: string | boolean, CNode: ClayNode): boolean {
       if (typeof condition === 'boolean') {
         return condition;
       }
 
-      return this.resolveBinding(condition, CNode);
+      return this.resolveBinding(condition);
     }
 }

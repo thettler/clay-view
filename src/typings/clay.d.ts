@@ -18,8 +18,11 @@ export interface ClayNode {
     domProps?: { [key: string]: any }
     slot?: string
     key?: string
+    ':key'?: string
     ref?: string
     refInFor?: boolean
+    for?: any[]|{ [key: string]: any }
+    ':for'?: string
     on?: {
         [key: string]: ClayEvent;
     }

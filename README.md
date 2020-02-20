@@ -175,6 +175,29 @@ const TextCNode = {
 }
 ```
 
+### For (v-for)
+The `for` key is basically the `v-for` directive from vue. To use it put an array or object in this key. The CNode will than
+get looped for every item inside the array or object. You can access the value by [binding](#binding) it to `<loopNamsepac>/for::value`
+the current index by `<loopNamsepac>/for::index` and if you loop an object the current key by `<loopNamsepac>/for::key` 
+> Note that as with the normal v-for you should specify a key and you can not loop the root element
+```js
+// Will render <div><span data-index="0">item_1</span><span data-index="1">item_2</span></div>
+const loopableCNode = {
+      namespace: 'root',
+      component: 'div',
+      children: {
+        namespace: 'looping-child',
+        component: 'span',
+        for: { key1: 'item_1', key2: 'item_2' },
+        ':key': 'looping-child/for::key',
+        attrs: {
+          ':data-index': 'looping-child/for::index',
+        },
+        ':text': 'child/for::value',
+      },
+    };
+```
+
 ### class 
 The `class` key let you add css classes to an CNode. It follows the same syntax as a [normal bound class in vue](https://vuejs.org/v2/guide/class-and-style.html#Binding-HTML-Classes). So you can use
 an `string`, `array` or`object` to define your classes
@@ -409,6 +432,8 @@ const DataCNode = {
   ':class': 'namespace::myReactiveData',
   ':if': 'namespace::myReactiveData',
   ':show': 'namespace::myReactiveData',
+  ':key': 'namespace::myReactiveData',
+  ':for': 'namespace::myReactiveData',
   'attrs': {
     ':id' : 'namespace::myReactiveData'
   },
@@ -464,7 +489,7 @@ Translated in a CNode it would look like this:
 ```js
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 
-const scopedSloltCNode = {
+const scopedSlotCNode = {
   namespace: 'key',
   component: ScopedSlotComponent,
   scopedSlots: {
@@ -487,7 +512,7 @@ In action it looks like this.
 ```js
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 
-const scopedSloltCNode = {
+const scopedSlotCNode = {
   namespace: 'slotNamespace',
   component: ScopedSlotComponent,
   scopedSlots: {
@@ -511,7 +536,7 @@ We can even nest scoped slots deeply and every Child will have access to all of 
 import ScopedSlotComponent from 'ScopedSlotComponent.vue';
 import OtherScopedSlotComponent from 'OtherScopedSlotComponent.vue';
 
-const scopedSloltCNode = {
+const scopedSlotCNode = {
   namespace: 'rootSlot',
   component: ScopedSlotComponent,
   scopedSlots: {

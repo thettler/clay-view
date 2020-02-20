@@ -23,41 +23,19 @@ export default class App extends Vue {
 
         schema: ClayNode = {
           namespace: 'root',
-          component: {
-            template: '<div><input type="text" v-model="data" /><slot :scopedData="data" /></div>',
-            data() {
-              return {
-                data: 'initalData',
-              };
-            },
-          },
-          scopedSlots: {
-            default: {
-              namespace: 'slotChild',
-              component: {
-                template: '<div><div v-text="bla"></div> <slot :childScopeData="\'childData\' + bla"></slot></div>',
-                props: ['bla'],
+          component: 'div',
+          children: {
+            namespace: 'child',
+            component: 'span',
+            for: { key1: 'item_1', key2: 'item_2' },
+            children: {
+              namespace: 'nestedChild',
+              component: 'b',
+              attrs: {
+                ':data-index': 'child/for::index',
+                ':data-key': 'child/for::key',
               },
-              props: {
-                ':bla': 'root/slot/default::scopedData',
-              },
-              data: {
-                data: 'something',
-              },
-              scopedSlots: {
-                default: {
-                  namespace: 'slotChildChild',
-                  component: {
-                    template: '<div><div v-text="bla"></div><div v-text="blaBla"></div> {{blaBlaa}}</div>',
-                    props: ['bla', 'blaBla', 'blaBlaa'],
-                  },
-                  props: {
-                    ':bla': 'root/slot/default::scopedData',
-                    ':blaBla': 'slotChild/slot/default::childScopeData',
-                    ':blaBlaa': 'slotChild::data',
-                  },
-                },
-              },
+              ':text': 'child/for::value',
             },
           },
         };
