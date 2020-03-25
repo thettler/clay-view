@@ -76,7 +76,13 @@ export default class ClayNodeBuilder {
       }
 
       if (Array.isArray(clayNode.children)) {
-        return (clayNode.children.map((child: ClayNode) => this.makeNewBuilder().parse(child)) as VNodeChildren);
+        return (clayNode.children.map((child: ClayNode) => {
+          if (child.for !== undefined || child[':for'] !== undefined) {
+            return this.loopCNode(child);
+          }
+
+          return this.makeNewBuilder().parse(child);
+        }) as VNodeChildren);
       }
 
       if (clayNode.children.for !== undefined || clayNode.children[':for'] !== undefined) {
@@ -95,7 +101,7 @@ export default class ClayNodeBuilder {
         return [];
       }
 
-      let iterable: Object|any[] = [];
+      let iterable: Object | any[] = [];
 
       if (cNode.for) {
         iterable = cNode.for;

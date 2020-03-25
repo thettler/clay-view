@@ -1,7 +1,7 @@
 <template>
     <div>
-        <clay-view v-model="schema"/>
-        <button @click="bla">some</button>
+        <clay-view :h="$createElement" v-model="schema"/>
+<!--        <button @click="bla">some</button>-->
     </div>
 </template>
 
@@ -17,27 +17,13 @@ import ClayStorage from '@/ClayStorage.vue';
       components: { ClayStorage, ClayView },
     })
 export default class App extends Vue {
-  bla() {
-    this.schema.children.show = !this.schema.children.show;
-  }
-
         schema: ClayNode = {
           namespace: 'root',
           component: 'div',
-          children: {
-            namespace: 'child',
-            component: 'span',
-            for: { key1: 'item_1', key2: 'item_2' },
-            children: {
-              namespace: 'nestedChild',
-              component: 'b',
-              attrs: {
-                ':data-index': 'child/for::index',
-                ':data-key': 'child/for::key',
-              },
-              ':text': 'child/for::value',
-            },
-          },
+          children: [{
+            namespace: 'example-component',
+            component: 'example-component',
+          }],
         };
 
         render(h: CreateElement) {
