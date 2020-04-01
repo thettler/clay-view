@@ -177,8 +177,8 @@ const TextCNode = {
 
 ### For (v-for)
 The `for` key is basically the `v-for` directive from vue. To use it put an array or object in this key. The CNode will than
-get looped for every item inside the array or object. You can access the value by [binding](#binding) it to `<loopNamsepac>/for::value`
-the current index by `<loopNamsepac>/for::index` and if you loop an object the current key by `<loopNamsepac>/for::key` 
+get looped for every item inside the array or object. You can access the value by [binding](#binding) it to `<loopNamsepac>.$for.value`
+the current index by `<loopNamsepac>.$for.index` and if you loop an object the current key by `<loopNamsepac>.$for.key` 
 > Note that as with the normal v-for you should specify a key and you can not loop the root element
 ```js
 // Will render <div><span data-index="0">item_1</span><span data-index="1">item_2</span></div>
@@ -189,11 +189,11 @@ const loopableCNode = {
         namespace: 'looping-child',
         component: 'span',
         for: { key1: 'item_1', key2: 'item_2' },
-        ':key': 'looping-child/for::key',
+        ':key': 'looping-child.$for.key',
         attrs: {
-          ':data-index': 'looping-child/for::index',
+          ':data-index': 'looping-child.$for.index',
         },
-        ':text': 'child/for::value',
+        ':text': 'looping-child.$for.value',
       },
     };
 ```
@@ -374,14 +374,14 @@ Now you can bind this data to our other keys. For example the `text`:
 const DataCNode = {
   namespace: 'ownNamespace',
   component: 'div',
-  ':text': 'ownNamespace::myReactiveData',
+  ':text': 'ownNamespace.myReactiveData',
   data: {
     myReactiveData: 'SomeData'
   }
 }
 ```
 As you can see we tell clay, by prefixing the key with a `:`, that we want to bind this key to an different value.
-Then we specify the key of the value inside of our `data` and prefix it with our `namespace` separated by `::`. The Rendered output will now be: 
+Then we specify the key of the value inside of our `data` and prefix it with our `namespace` separated by `.`. The Rendered output will now be: 
 ````html
 <div>SomeData</div>
 ````
@@ -390,7 +390,7 @@ If we want to get values from an more nested object we can use dot notation to g
 const DataCNode = {
   namespace: 'ownNamespace',
   component: 'div',
-  ':text': 'ownNamespace::myReactiveData.nested.inside',
+  ':text': 'ownNamespace.myReactiveData.nested.inside',
   data: {
     myReactiveData: {
       nested: {
@@ -414,7 +414,7 @@ const DataCNode = {
   children: {
     namespace: 'childNamespace',
       component: 'span',
-      ':text': 'parentNamespace::myReactiveData',
+      ':text': 'parentNamespace.myReactiveData',
   } 
 }
 ```
@@ -428,29 +428,29 @@ You cant bind all of the Keys of an CNode but here is an list of all the keys th
 const DataCNode = {
   namespace: 'namespace',
   component: 'div',
-  ':text': 'namespace::myReactiveData',
-  ':class': 'namespace::myReactiveData',
-  ':if': 'namespace::myReactiveData',
-  ':show': 'namespace::myReactiveData',
-  ':key': 'namespace::myReactiveData',
-  ':for': 'namespace::myReactiveData',
+  ':text': 'namespace.myReactiveData',
+  ':class': 'namespace.myReactiveData',
+  ':if': 'namespace.myReactiveData',
+  ':show': 'namespace.myReactiveData',
+  ':key': 'namespace.myReactiveData',
+  ':for': 'namespace.myReactiveData',
   'attrs': {
-    ':id' : 'namespace::myReactiveData'
+    ':id' : 'namespace.myReactiveData'
   },
   'style': {
-    ':color' : 'namespace::myReactiveData'
+    ':color' : 'namespace.myReactiveData'
   },
   'props': {
-    ':myProp' : 'namespace::myReactiveData'
+    ':myProp' : 'namespace.myReactiveData'
   },
   'domProps': {
-    ':myDomProp' : 'namespace::myReactiveData'
+    ':myDomProp' : 'namespace.myReactiveData'
   },
   'on': {
-    ':click': 'namespace::myReactiveFunction'
+    ':click': 'namespace.myReactiveFunction'
   },
   'nativeOn': {
-    ':click': 'namespace::myReactiveFunction'
+    ':click': 'namespace.myReactiveFunction'
   },
   data: {
     myReactiveData: 'data',
@@ -519,16 +519,16 @@ const scopedSlotCNode = {
     default: {  
       namespace: 'child',
       component: 'button',
-      ':text':'slotNamespace/slot/default::scopedValue',
+      ':text':'slotNamespace.$slot.default.scopedValue',
       onNative: {
-        ':click': 'slotNamespace/slot/default::scopedFunction'
+        ':click': 'slotNamespace.$slot.default.scopedFunction'
       } 
     }
   }
 }
 ```
 As you can see we tell clay to bind the `text` and the `click` to an value. But because we want to use the `data` from our scoped slot 
-we prefix it with the `namespace` from the `CNode` with the `scopedSlot` and add the `/slot/` and the name of the slot ,in this case `default`.
+we prefix it with the `namespace` from the `CNode` with the `scopedSlot` and add the `$slot` and the name of the slot, in this case `default`.
 Now we can use out dot notation to get the data from the `scopedSlot`.  
 
 We can even nest scoped slots deeply and every Child will have access to all of his parent Scoped Slots.
@@ -543,18 +543,56 @@ const scopedSlotCNode = {
     default: {
       namespace: 'childSlot',
       component: OtherScopedSlotComponent,
-      ':class': 'rootSlot/slot/default::scopedValue',
+      ':class': 'rootSlot.$slot.default.scopedValue',
       scopedSlots: {
         default: {
           namespace: 'nestedChild',
           component: 'button',
-          ':text': 'childSlot/slot/default::scopedValue',
+          ':text': 'childSlot.$slot.default.scopedValue',
           onNative: {
-            ':click': 'rootSlot/slot/default::scopedFunction'
+            ':click': 'rootSlot.$slot.default.scopedFunction'
           }
         }
       }
     }
   }
+};
+```
+
+
+## Using JS in the Schema
+There are use cases where it is quit handy to do js logic inside of an template. For example to hide and show a dropdown
+on a button click. Clay gives you the option to use JS code as a bound value. This Function is disabled by default because 
+of potential security issues if it is used carelessly. To activate pass a config as prop to the `<clay-view>` with `enableJsExecution: true`. 
+```vue
+<clay-view :schema="schema" :config="{enableJsExecution: true}"></clay-view>
+```
+To use Js in the schema now you bind a value and prefix the value wit `|>` the following string will be then interpreted as JS Code. 
+The Data that you can normally access with the normal bind syntax is also available in the scope.
+
+```js
+
+const scopedSlotCNode = {
+  namespace: 'container',
+  component: 'div',
+  data: {
+    open: false,  
+  },
+  children: [
+    {
+      namespace: 'container',
+      component: 'button',
+      text: 'Click me',
+      on: {
+        ':click': '|> () => container.open = !container.open '
+      } 
+    },
+    {  
+      namespace: 'container',
+      component: 'div',
+      text: 'Hidden till click',
+      ':if': 'container.open'
+    }
+  ]
 };
 ```
