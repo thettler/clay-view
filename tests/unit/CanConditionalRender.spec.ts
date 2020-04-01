@@ -47,7 +47,7 @@ describe('Clay View can render conditionally', () => {
           children: {
             namespace: 'childHidden',
             component: 'span',
-            ':if': 'childHidden::render',
+            ':if': 'childHidden.render',
             data: {
               render: false,
             },
@@ -68,7 +68,7 @@ describe('Clay View can render conditionally', () => {
           children: {
             namespace: 'childHidden',
             component: 'span',
-            ':if': 'childHidden::render',
+            ':if': 'childHidden.render',
             data: {
               render: true,
             },
@@ -90,7 +90,7 @@ describe('Clay View can render conditionally', () => {
             default: {
               namespace: 'childHidden',
               component: 'span',
-              ':if': 'root/slot/default::show',
+              ':if': 'root.$slot.default.show',
             },
           },
         },
@@ -145,7 +145,7 @@ describe('Clay View can render conditionally', () => {
           children: {
             namespace: 'childHidden',
             component: 'span',
-            ':show': 'childHidden::render',
+            ':show': 'childHidden.render',
             data: {
               render: false,
             },
@@ -166,7 +166,7 @@ describe('Clay View can render conditionally', () => {
           children: {
             namespace: 'childHidden',
             component: 'span',
-            ':show': 'childHidden::render',
+            ':show': 'childHidden.render',
             data: {
               render: true,
             },
@@ -188,7 +188,7 @@ describe('Clay View can render conditionally', () => {
             default: {
               namespace: 'childHidden',
               component: 'span',
-              ':show': 'root/slot/default::show',
+              ':show': 'root.$slot.default.show',
             },
           },
         },

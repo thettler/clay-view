@@ -1,7 +1,7 @@
 import {
   Component, CreateElement, VNode, VNodeChildren, VNodeData,
 } from 'vue';
-import { ClayEvent, ClayNode } from '@/typings/clay.d';
+import { ClayConfig, ClayEvent, ClayNode } from '@/typings/clay.d';
 import DefaultStorageDriver from '@/DefaultStorageDriver';
 import { cloneDeep, mapObject, mapObjectWithKey } from '@/support';
 
@@ -12,10 +12,13 @@ export default class ClayNodeBuilder {
 
     protected components: { [key: string]: Component };
 
-    constructor(h: CreateElement, components: { [key: string]: Component }, storage: DefaultStorageDriver) {
+    private config: ClayConfig;
+
+    constructor(h: CreateElement, components: { [key: string]: Component }, storage: DefaultStorageDriver, config: ClayConfig) {
       this.h = h;
       this.storage = storage;
       this.components = components;
+      this.config = config;
     }
 
     public parse(cNode: ClayNode): VNode | undefined {
@@ -74,14 +77,14 @@ export default class ClayNodeBuilder {
       if (!clayNode.children) {
         return undefined;
       }
-
+      const store = { ...this.storage.store };
       if (Array.isArray(clayNode.children)) {
         return (clayNode.children.map((child: ClayNode) => {
           if (child.for !== undefined || child[':for'] !== undefined) {
             return this.loopCNode(child);
           }
-
-          return this.makeNewBuilder().parse(child);
+          this.storage.store = { ...store };
+          return this.makeNewBuilder(this.storage).parse(child);
         }) as VNodeChildren);
       }
 
@@ -93,7 +96,7 @@ export default class ClayNodeBuilder {
     }
 
     makeNewBuilder(storage ?: DefaultStorageDriver): ClayNodeBuilder {
-      return new ClayNodeBuilder(this.h, this.components, storage || this.storage);
+      return new ClayNodeBuilder(this.h, this.components, storage || this.storage, this.config);
     }
 
     loopCNode(cNode: ClayNode): VNodeChildren {
@@ -114,10 +117,12 @@ export default class ClayNodeBuilder {
       if (Array.isArray(iterable)) {
         return cloneDeep(iterable).map((value: any, index: number) => {
           this.storage.addData({
-            [`${cNode.namespace}/for`]: {
-              index,
-              value,
-              key: undefined,
+            [cNode.namespace]: {
+              $for: {
+                index,
+                value,
+                key: undefined,
+              },
             },
           });
           return this.makeNewBuilder().parse(cNode);
@@ -126,11 +131,13 @@ export default class ClayNodeBuilder {
 
       return Object.keys(iterable).map((key: string, index: number) => {
         this.storage.addData({
-          [`${cNode.namespace}/for`]: {
-            index,
-            // @ts-ignore
-            value: iterable[key],
-            key,
+          [cNode.namespace]: {
+            $for: {
+              index,
+              // @ts-ignore
+              value: iterable[key],
+              key,
+            },
           },
         });
         return this.makeNewBuilder().parse(cNode);
@@ -147,7 +154,7 @@ export default class ClayNodeBuilder {
         (scopedSlot: ClayNode, slotName: string) => (props: any) => {
           this.storage.addScopeStore(clayNode.namespace, slotName, props);
 
-          const builder = new ClayNodeBuilder(this.h, this.components, this.storage);
+          const builder = new ClayNodeBuilder(this.h, this.components, this.storage, this.config);
           return builder.parse(scopedSlot);
         },
       );
@@ -316,7 +323,23 @@ export default class ClayNodeBuilder {
     }
 
     resolveBinding(path: string): any {
+      const trimmedPath = path.trim();
+      if (trimmedPath.startsWith('|>')) {
+        return this.executeJs(path);
+      }
+
       return this.storage.get(path);
+    }
+
+    executeJs(jsString: string) {
+      if (!this.config.enableJsExecution) {
+        return jsString;
+      }
+
+      const cleanedJsString = jsString.replace('|>', '').trim();
+      // eslint-disable-next-line no-new-func
+      const $func = new Function('context', `var result; with(context){result = ${cleanedJsString}}; return result; `);
+      return $func(this.storage.store);
     }
 
     resolveComponent(component: string | Component): string | Component {

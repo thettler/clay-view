@@ -11,7 +11,7 @@ describe('Clay View binding', () => {
         myData: 'storageValue',
       },
       props: {
-        ':myProp': 'root::myData',
+        ':myProp': 'root.myData',
       },
     };
 
@@ -30,7 +30,7 @@ describe('Clay View binding', () => {
         myNestedData: { more: { value: 'nestedValue' } },
       },
       props: {
-        ':myNestedProp': 'root::myNestedData.more.value',
+        ':myNestedProp': 'root.myNestedData.more.value',
       },
     };
 
@@ -48,7 +48,7 @@ describe('Clay View binding', () => {
       data: {
         class: 'boundClass',
       },
-      ':class': 'root::class',
+      ':class': 'root.class',
     };
 
     const wrapper = mount(ClayView, {
@@ -65,7 +65,7 @@ describe('Clay View binding', () => {
       data: {
         class: ['boundClass', 'more'],
       },
-      ':class': 'root::class',
+      ':class': 'root.class',
     };
 
     const wrapper = mount(ClayView, {
@@ -82,7 +82,7 @@ describe('Clay View binding', () => {
       data: {
         class: { boundClass: true, more: true, notThere: false },
       },
-      ':class': 'root::class',
+      ':class': 'root.class',
     };
 
     const wrapper = mount(ClayView, {
@@ -100,7 +100,7 @@ describe('Clay View binding', () => {
         class: { boundClass: true },
       },
       class: 'staticClass',
-      ':class': 'root::class',
+      ':class': 'root.class',
     };
 
     const wrapper = mount(ClayView, {
@@ -118,7 +118,7 @@ describe('Clay View binding', () => {
         myData: 'boundDomProp',
       },
       domProps: {
-        ':value': 'root::myData',
+        ':value': 'root.myData',
       },
     };
 
@@ -137,7 +137,7 @@ describe('Clay View binding', () => {
         style: 'red',
       },
       style: {
-        ':color': 'root::style',
+        ':color': 'root.style',
       },
     };
 
@@ -155,7 +155,7 @@ describe('Clay View binding', () => {
       data: {
         id: 'boundId',
       },
-      attrs: { ':id': 'root::id' },
+      attrs: { ':id': 'root.id' },
     };
 
     const wrapper = mount(ClayView, {
@@ -172,7 +172,7 @@ describe('Clay View binding', () => {
       data: {
         text: 'text content',
       },
-      ':text': 'root::text',
+      ':text': 'root.text',
     };
 
     const wrapper = mount(ClayView, {
@@ -192,7 +192,7 @@ describe('Clay View binding', () => {
       children: {
         namespace: 'child',
         component: 'span',
-        ':text': 'parent::text',
+        ':text': 'parent.text',
       },
     };
 

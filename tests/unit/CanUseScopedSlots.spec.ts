@@ -19,7 +19,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: { template: '<div v-text="bla"></div>', props: ['bla'] },
           props: {
-            ':bla': 'root/slot/default::scopedData',
+            ':bla': 'root.$slot.default.scopedData',
           },
         },
       },
@@ -58,7 +58,7 @@ describe('Clay View scoped slots', () => {
             props: ['bla'],
           },
           props: {
-            ':bla': 'root/slot/default::scopedData',
+            ':bla': 'root.$slot.default.scopedData',
           },
           scopedSlots: {
             default: {
@@ -68,8 +68,8 @@ describe('Clay View scoped slots', () => {
                 props: ['bla', 'blaBla'],
               },
               props: {
-                ':bla': 'root/slot/default::scopedData',
-                ':blaBla': 'child/slot/default::childScopeData',
+                ':bla': 'root.$slot.default.scopedData',
+                ':blaBla': 'child.$slot.default.childScopeData',
               },
             },
           },
@@ -107,7 +107,7 @@ describe('Clay View scoped slots', () => {
             props: ['childSlot'],
           },
           props: {
-            ':childSlot': 'child/slot/default::childScopeData',
+            ':childSlot': 'child.$slot.default.childScopeData',
           },
           scopedSlots: {
             default: {
@@ -125,7 +125,7 @@ describe('Clay View scoped slots', () => {
       });
       expect(true).toBeFalsy();
     } catch (e) {
-      expect(e.message).toEqual('Namespace child/slot/default does not exist');
+      expect(e.message).toEqual('Namespace child does not exist');
     }
     console.error = consolError;
     done();
@@ -146,7 +146,7 @@ describe('Clay View scoped slots', () => {
         default: {
           namespace: 'slotChild',
           component: 'span',
-          ':text': 'root/slot/default::scopedData',
+          ':text': 'root.$slot.default.scopedData',
         },
       },
     };
@@ -174,7 +174,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: 'input',
           domProps: {
-            ':value': 'root/slot/default::scopedData',
+            ':value': 'root.$slot.default.scopedData',
           },
         },
       },
@@ -207,7 +207,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: 'div',
           attrs: {
-            ':id': 'root/slot/default::scopedData',
+            ':id': 'root.$slot.default.scopedData',
           },
         },
       },
@@ -237,7 +237,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: 'div',
           style: {
-            ':color': 'root/slot/default::scopedData',
+            ':color': 'root.$slot.default.scopedData',
           },
         },
       },
@@ -265,7 +265,7 @@ describe('Clay View scoped slots', () => {
         default: {
           namespace: 'slotChild',
           component: 'div',
-          ':class': 'root/slot/default::scopedData',
+          ':class': 'root.$slot.default.scopedData',
         },
       },
     };
@@ -293,7 +293,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: 'button',
           on: {
-            ':click': 'root/slot/default::event',
+            ':click': 'root.$slot.default.event',
           },
         },
       },
@@ -324,7 +324,7 @@ describe('Clay View scoped slots', () => {
           namespace: 'slotChild',
           component: { template: '<button></button>' },
           nativeOn: {
-            ':click': 'root/slot/default::event',
+            ':click': 'root.$slot.default.event',
           },
         },
       },

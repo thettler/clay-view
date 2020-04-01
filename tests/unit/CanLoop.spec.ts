@@ -12,9 +12,9 @@ describe('Clay View can loop', () => {
         component: 'span',
         for: ['item_1', 'item_2'],
         attrs: {
-          ':data-index': 'child/for::index',
+          ':data-index': 'child.$for.index',
         },
-        ':text': 'child/for::value',
+        ':text': 'child.$for.value',
       },
     };
 
@@ -32,11 +32,11 @@ describe('Clay View can loop', () => {
       children: {
         namespace: 'child',
         component: 'span',
-        ':for': 'root::loopable',
+        ':for': 'root.loopable',
         attrs: {
-          ':data-index': 'child/for::index',
+          ':data-index': 'child.$for.index',
         },
-        ':text': 'child/for::value',
+        ':text': 'child.$for.value',
       },
       data: {
         loopable: ['item_1', 'item_2'],
@@ -61,11 +61,11 @@ describe('Clay View can loop', () => {
         children: {
           namespace: 'child',
           component: 'span',
-          ':for': 'root::loopable',
+          ':for': 'root.loopable',
           attrs: {
-            ':data-index': 'child/for::index',
+            ':data-index': 'child.$for.index',
           },
-          ':text': 'child/for::value',
+          ':text': 'child.$for.value',
         },
       },
       data: {
@@ -93,9 +93,9 @@ describe('Clay View can loop', () => {
           namespace: 'nestedChild',
           component: 'b',
           attrs: {
-            ':data-index': 'child/for::index',
+            ':data-index': 'child.$for.index',
           },
-          ':text': 'child/for::value',
+          ':text': 'child.$for.value',
         },
       },
     };
@@ -116,10 +116,10 @@ describe('Clay View can loop', () => {
         component: 'span',
         for: { key1: 'item_1', key2: 'item_2' },
         attrs: {
-          ':data-index': 'child/for::index',
-          ':data-key': 'child/for::key',
+          ':data-index': 'child.$for.index',
+          ':data-key': 'child.$for.key',
         },
-        ':text': 'child/for::value',
+        ':text': 'child.$for.value',
       },
     };
 
@@ -139,10 +139,10 @@ describe('Clay View can loop', () => {
         component: 'span',
         for: { key1: 'item_1', key2: 'item_2' },
         attrs: {
-          ':data-index': 'child/for::index',
-          ':data-key': 'child/for::key',
+          ':data-index': 'child.$for.index',
+          ':data-key': 'child.$for.key',
         },
-        ':text': 'child/for::value',
+        ':text': 'child.$for.value',
       }],
     };
 
@@ -165,10 +165,10 @@ describe('Clay View can loop', () => {
           namespace: 'nestedChild',
           component: 'b',
           attrs: {
-            ':data-index': 'child/for::index',
-            ':data-key': 'child/for::key',
+            ':data-index': 'child.$for.index',
+            ':data-key': 'child.$for.key',
           },
-          ':text': 'child/for::value',
+          ':text': 'child.$for.value',
         },
       },
     };
@@ -187,12 +187,12 @@ describe('Clay View can loop', () => {
       children: {
         namespace: 'child',
         component: 'span',
-        ':for': 'root::loopable',
+        ':for': 'root.loopable',
         attrs: {
-          ':data-index': 'child/for::index',
-          ':data-key': 'child/for::key',
+          ':data-index': 'child.$for.index',
+          ':data-key': 'child.$for.key',
         },
-        ':text': 'child/for::value',
+        ':text': 'child.$for.value',
       },
       data: {
         loopable: { key1: 'item_1', key2: 'item_2' },
@@ -214,7 +214,7 @@ describe('Clay View can loop', () => {
         namespace: 'child',
         component: 'span',
         for: { key1: 'item_1', key2: 'item_2' },
-        ':key': 'child/for::key',
+        ':key': 'child.$for.key',
       },
     };
 

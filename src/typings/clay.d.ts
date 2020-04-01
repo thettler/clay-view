@@ -21,7 +21,7 @@ export interface ClayNode {
     ':key'?: string
     ref?: string
     refInFor?: boolean
-    for?: any[]|{ [key: string]: any }
+    for?: any[] | { [key: string]: any }
     ':for'?: string
     on?: {
         [key: string]: ClayEvent;
@@ -39,4 +39,8 @@ export type ClayEvent = Function | string;
 
 export interface StorageDriver {
     get(key: string, options?: any): any;
+}
+
+export interface ClayConfig {
+    enableJsExecution: boolean
 }
