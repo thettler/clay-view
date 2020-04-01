@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve",
     "build:library": "vue-cli-service build --target lib --name clay-view ./src/index.ts",
     "build:typings": "tsc --noEmit false --declaration true --isolatedModules false --emitDeclarationOnly --declarationDir dist",
+    "publish": "yarn build:library && yarn build:typings",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
   },
