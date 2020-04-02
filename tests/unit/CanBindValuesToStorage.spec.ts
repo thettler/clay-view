@@ -165,7 +165,7 @@ describe('Clay View binding', () => {
     expect(wrapper.html()).toBe('<div id="boundId"></div>');
   });
 
-  it('bound to textchild', () => {
+  it('bound to text child', () => {
     const schema: ClayNode = {
       namespace: 'root',
       component: 'div',
@@ -180,6 +180,23 @@ describe('Clay View binding', () => {
     });
 
     expect(wrapper.html()).toBe('<div>text content</div>');
+  });
+
+  it('bound to html child', () => {
+    const schema: ClayNode = {
+      namespace: 'root',
+      component: 'div',
+      data: {
+        html: '<span>html content</span>',
+      },
+      ':html': 'root.html',
+    };
+
+    const wrapper = mount(ClayView, {
+      propsData: { schema },
+    });
+
+    expect(wrapper.html()).toBe('<div><span>html content</span></div>');
   });
 
   it('works with nested values as well', () => {

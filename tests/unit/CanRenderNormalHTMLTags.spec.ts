@@ -127,6 +127,37 @@ describe('Clay View can render normal html', () => {
     expect(wrapper.html()).toBe('<div>Some Text</div>');
   });
 
+  it('with inner html', () => {
+    const schema: ClayNode = {
+      namespace: 'key',
+      component: 'div',
+      html: '<span>Some Text</span>',
+    };
+
+    const wrapper = mount(ClayView, {
+      propsData: { schema },
+    });
+
+    expect(wrapper.html()).toBe('<div><span>Some Text</span></div>');
+  });
+
+  it('with inner html and domProps', () => {
+    const schema: ClayNode = {
+      namespace: 'key',
+      component: 'div',
+      domProps: {
+        id: 'myId',
+      },
+      html: '<span>Some Text</span>',
+    };
+
+    const wrapper = mount(ClayView, {
+      propsData: { schema },
+    });
+
+    expect(wrapper.html()).toBe('<div id="myId"><span>Some Text</span></div>');
+  });
+
   it('with inner children', () => {
     const schema: ClayNode = {
       namespace: 'key',

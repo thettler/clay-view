@@ -153,6 +153,18 @@ const TextCNode = {
 }
 ```
 
+### html (v-html)
+The `html` key is basically the `v-html` directive from vue.
+>If the `CNode` has a `html`,`text` and `children` key at the same time the `html` will overwrite the `text` and `children`
+```js
+// Will render <div><span>Some Text</span></div>
+const HtmlCNode = {
+  namespace: 'key',
+  component: 'div',
+  html: '<span>Some Text</span>'
+}
+```
+
 ### if (v-if)
 The `if` key is basically the `v-if` directive from vue.
 ```js
@@ -429,6 +441,7 @@ const DataCNode = {
   namespace: 'namespace',
   component: 'div',
   ':text': 'namespace.myReactiveData',
+  ':html': 'namespace.myReactiveData',
   ':class': 'namespace.myReactiveData',
   ':if': 'namespace.myReactiveData',
   ':show': 'namespace.myReactiveData',

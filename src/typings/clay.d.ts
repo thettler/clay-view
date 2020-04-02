@@ -6,6 +6,8 @@ export interface ClayNode {
     children?: ClayNode[] | ClayNode
     'text'?: string
     ':text'?: string
+    'html'?: string
+    ':html'?: string
     class?: { [key: string]: boolean } | string[] | string
     ':class'?: string
     if?: boolean

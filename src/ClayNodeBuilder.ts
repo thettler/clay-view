@@ -197,6 +197,10 @@ export default class ClayNodeBuilder {
         vNodeData.domProps = this.CNodeDomPropsToVNode(clayNode);
       }
 
+      if (clayNode.html || clayNode[':html']) {
+        vNodeData.domProps = { ...vNodeData.domProps || {}, ...this.CNodeHTMLToVNode(clayNode) };
+      }
+
       if (clayNode.ref) {
         vNodeData.ref = clayNode.ref;
       }
@@ -251,6 +255,18 @@ export default class ClayNodeBuilder {
         return {};
       }
       return this.resolveBindableObject(cNode.domProps, cNode);
+    }
+
+    CNodeHTMLToVNode(cNode: ClayNode): object {
+      if (cNode.html) {
+        return { innerHTML: cNode.html };
+      }
+
+      if (cNode[':html']) {
+        return { innerHTML: this.resolveBinding(cNode[':html']) };
+      }
+
+      return {};
     }
 
     CNodeAttrsToVNode(clayNode: ClayNode): object {
