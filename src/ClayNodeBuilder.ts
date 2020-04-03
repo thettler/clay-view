@@ -38,7 +38,6 @@ export default class ClayNodeBuilder {
       });
     }
 
-
     parseClayNode(cNode: ClayNode): VNode | undefined {
       this.validateCNode(cNode);
 
